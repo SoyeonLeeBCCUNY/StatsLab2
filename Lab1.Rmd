@@ -18,13 +18,27 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 This is coding for @slamecka_retroactive_1960.
+
 ```{r}
+n<-36
+OL<-3
+IL<-3
 
-subject<-rep(1:36)
+design<-matrix(4,ncol=3,nrow=3)
+colnames(design)<-c("OL_2","OL_4","OL_8")
+rownames(design)<-c("IL_0","IL_4","IL_8")
+
+subjects<-1:36
 OL<-rep(c("2","4","8"),times=12)
-IL<-rep(rep(c("0","4","8"),each=3),4)
-recall<-rnorm()
+IL<-rep(c("0","4","8"),each=12)
 
+long_design<-tidyr::tibble(subjects,
+                    OL,
+                    IL)
 
+library(dplyr)
+long_design%>%
+  group_by(OL,IL)%>%
+  count()
 ```
 
