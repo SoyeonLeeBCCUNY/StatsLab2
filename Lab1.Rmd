@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #Coding problem
 #Create a dataframe that capable of representing the design, in as complete a way as you can, in the Slamecka (1960) paper
 
-#Indenpendence:
+#Independence:5
 ```
 
 This is coding for @slamecka_retroactive_1960.
