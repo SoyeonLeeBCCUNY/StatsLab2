@@ -1,6 +1,7 @@
 ---
 title: "Lab1"
 author: "Soyeon Lee"
+bibliography: BCStats.bib
 date: "2/13/2021"
 output: html_document
 ---
@@ -11,9 +12,19 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 #Coding problem
-
 #Create a dataframe that capable of representing the design, in as complete a way as you can, in the Slamecka (1960) paper
 
 #Indenpendence:
+```
+
+This is coding for @slamecka_retroactive_1960.
+```{r}
+
+subject<-rep(1:36)
+OL<-rep(c("2","4","8"),times=12)
+IL<-rep(rep(c("0","4","8"),each=3),4)
+recall<-rnorm()
+
+
 ```
 
