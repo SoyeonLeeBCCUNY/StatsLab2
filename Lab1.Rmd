@@ -1,0 +1,19 @@
+---
+title: "Lab1"
+author: "Soyeon Lee"
+date: "2/13/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#Coding problem
+
+#Create a dataframe that capable of representing the design, in as complete a way as you can, in the Slamecka (1960) paper
+
+#Indenpendence:
+```
+
