@@ -384,6 +384,104 @@ summary {
 
 #Indenpendence:</code></pre>
 <p>This is coding for <span class="citation">Slamecka (1960)</span>.</p>
+<pre class="r"><code>n&lt;-36
+OL&lt;-3
+IL&lt;-3
+
+design&lt;-matrix(4,ncol=3,nrow=3)
+colnames(design)&lt;-c(&quot;OL_2&quot;,&quot;OL_4&quot;,&quot;OL_8&quot;)
+rownames(design)&lt;-c(&quot;IL_0&quot;,&quot;IL_4&quot;,&quot;IL_8&quot;)
+
+subjects&lt;-1:36
+OL&lt;-rep(c(2,4,8),times=12)
+IL&lt;-rep(c(0,4,8),each=12)
+recall&lt;-sample(0:20,36,replace=TRUE)
+
+long_design&lt;-tidyr::tibble(subjects,
+                           OL,
+                           IL,
+                           recall)
+
+library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>long_design%&gt;%
+  group_by(OL,IL)%&gt;%
+  count()</code></pre>
+<pre><code>## # A tibble: 9 x 3
+## # Groups:   OL, IL [9]
+##      OL    IL     n
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;
+## 1     2     0     4
+## 2     2     4     4
+## 3     2     8     4
+## 4     4     0     4
+## 5     4     4     4
+## 6     4     8     4
+## 7     8     0     4
+## 8     8     4     4
+## 9     8     8     4</code></pre>
+<pre class="r"><code>#mixed design
+mixed_design&lt;-tribble(
+               ~Subjects, ~OL, ~IL,
+               1,2,0,
+               1,4,4,
+               1,8,8,
+               2,4,0,
+               2,8,4,
+               2,2,8,
+               3,8,0,
+               3,2,4,
+               3,4,8,
+               4,2,4,
+               4,4,0,
+               4,8,8,
+               5,4,4,
+               5,2,8,
+               5,8,0,
+               6,8,4,
+               6,4,8,
+               6,2,0,
+               7,2,8,
+               7,4,0, 
+               7,8,4,
+               8,4,8,
+               8,2,5,
+               8,8,0,
+               9,8,8,
+               9,4,4,
+               9,2,0
+               )
+
+mixed_design%&gt;%
+  group_by(OL,IL)%&gt;%
+  count()</code></pre>
+<pre><code>## # A tibble: 10 x 3
+## # Groups:   OL, IL [10]
+##       OL    IL     n
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;
+##  1     2     0     3
+##  2     2     4     2
+##  3     2     5     1
+##  4     2     8     3
+##  5     4     0     3
+##  6     4     4     3
+##  7     4     8     3
+##  8     8     0     3
+##  9     8     4     3
+## 10     8     8     3</code></pre>
+<pre class="r"><code>full_mixed_design&lt;-rbind(mixed_design,
+                         mixed_design,
+                         mixed_design,
+                         mixed_design)%&gt;%
+  mutate(Subjects=rep(1:36,each=3),
+         recall=sample(0:20,36*3,replace=TRUE))</code></pre>
 <div id="refs" class="references">
 <div id="ref-slamecka_retroactive_1960">
 <p>Slamecka, Norman J. 1960. “Retroactive Inhibition of Connected Discourse as a Function of Practice Level.” <em>Journal of Experimental Psychology</em> 59 (2): 104–8. <a href="https://doi.org/10/b5z2nt">https://doi.org/10/b5z2nt</a>.</p>
