@@ -63,6 +63,6 @@ Use R to create a dataframe to represent predictions for this new 3x3x3 design. 
 Independence:
 
 ```{r}
+library(tibble)
 
-```
-
+new_data<-tibble(reward=rep(c("0","50","1000000"),each=9))
