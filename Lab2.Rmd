@@ -43,12 +43,13 @@ ggplot(slamecka_design,aes(x=number_of_IL,
              size=2,
              stat = "summary", 
              fun = "mean",)+
-  scale_shape_manual(values=c(1,8,3))
-  theme_classic()+
+  scale_shape_manual(values=c(1,8,3))+
   scale_y_continuous(name="Number of words correct",
                      breaks = c(0,20,40,60,80))+
   scale_x_continuous(name="Number of interpolated lists",
-                     breaks = c(2,4,8))
+                     breaks = c(2,4,8))+
+  theme_classic()
+  
 ```
 
 
