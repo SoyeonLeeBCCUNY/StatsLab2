@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
   make the x-axis and y axis ticks the same
   include different symbols to differentiate the lines
 
-Independence:
+Independence:80
 ```{r}
 library(ggplot2)
 library(tibble)
@@ -44,11 +44,11 @@ ggplot(slamecka_design,aes(x=number_of_IL,
              stat = "summary", 
              fun = "mean",)+
   scale_shape_manual(values=c(1,8,3))+
-  scale_y_continuous(name="Number of words correct",
-                     breaks = c(20,40,60),
-                      limits = c(0,80))+
-  scale_x_continuous(name="Number of interpolated lists",
-                     breaks = c(2,4,8))+
+  xlab("Number of interpolated lists")+
+  ylab("Number of words correct")+
+  scale_y_continuous(breaks = c(0,20,40,60,80),
+                     limits = c(0,80))+
+  scale_x_continuous(breaks = c(2,4,8))+
   theme_classic()
   
 ```
