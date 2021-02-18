@@ -17,7 +17,33 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Independence:
 ```{r}
+library(ggplot2)
+library(tibble)
 
+slamecka_design <- tibble(number_of_learning_trials = rep(c(2,4,8), each=6),
+                          number_of_IL = rep(rep(c(2,4,8), 2), 3),
+                          subjects = 1:18,
+                          recall = c(35,21,6,
+                                   39,31,8,
+                                   40,34,18,
+                                   52,42,26,
+                                   61,58,46,
+                                   73,66,52
+                                   )
+                          )
+
+ggplot(slamecka_design,aes(x=number_of_IL,
+                           group = number_of_learning_trials,
+                           y=recall))+
+  geom_line(stat = "summary", fun = "mean")+
+  geom_point(aes(shape=number_of_learning_trials),
+             size=2,
+             stat = "summary", 
+             fun = "mean",)+
+  scale_shape_manual(values=c(1,8,3))
+  theme_classic()+
+  xlab("Number of interpolated lists")+
+  ylab("Number of words correct")
 ```
 
 
