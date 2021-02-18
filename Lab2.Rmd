@@ -66,3 +66,4 @@ Independence:
 library(tibble)
 
 new_data<-tibble(reward=rep(c("0","50","1000000"),each=9))
+new_data
