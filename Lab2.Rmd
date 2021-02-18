@@ -64,11 +64,22 @@ Independence:
 
 ```{r}
 library(tibble)
+library(ggplot2)
 
-new_data<-tibble(practice=rep(c("2","4","8"),times=9),
-                 distraction=rep(rep(c("0","4","8"),each=3),3),
+new_data<-tibble(practice=rep(rep(c("2","4","8"),each=3),3),
+                 distraction=rep(c("0","4","8"),times=9),
                  reward=rep(c("0","50","1000000"),each=9),
-                 recall=c())
+                 recall=c(5,3,1,6,4,2,7,5,3,
+                          8,6,4,10,8,6,12,10,8,
+                          15,10,6,18,13,8,22,16,12))
+
+ggplot(new_data,aes(x=practice,
+                    y=recall,
+                    group=distraction))+
+  geom_line(stat="summary",fun="mean")+
+  geom_point(stat="summary",fun="mean")+
+  theme_classic()+
+  facet_wrap(~reward)
                  
 ```
 
