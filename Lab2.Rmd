@@ -32,7 +32,7 @@ slamecka_design <- tibble(number_of_learning_trials = rep(c(2,4,8), each=6),
                                    )
                           )
 
-slamecka_design$number_of_learning_trials<-
+slamecka_design$number_of_learning_trials <- 
   as.factor(slamecka_design$number_of_learning_trials)
 
 ggplot(slamecka_design,aes(x=number_of_IL,
