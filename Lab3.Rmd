@@ -53,7 +53,7 @@ X_Tshared
 #Since we have the explained portion of the variance of Y, we can also obtain the unexplained variance
 ```{r}
 #explained portion
-explained<-1-overall_model
-explained
+unexplained<-1-overall_model
+unexplained
 ```
 
