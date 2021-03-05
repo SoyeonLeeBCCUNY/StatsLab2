@@ -9,8 +9,51 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-##
-```{r}
 
+```{r}
+#ok to share my example on our course website for this lab
+
+library(tibble)
+library(dplyr)
+
+data<-tibble(X=c(4,4,7,7,10,10),
+             T=c(1,2,2,4,3,6),
+             Y=c(14,23,30,50,39,67))
+
+```
+
+##An alternative view for finding unique variances
+# As shown in $The shared part$ section, the total variance predicted by X and T is composed of three sections: the unique part of X, the unique part of T, and the shared variance between X and T. However, the total variance predicted by X and T can also be viewed as the sum of total variance predicted by one variable and the variance unique to the second variable.  
+
+#Unlike the de-correlation method, finding the unique part of each variable does not involve de-correlation.  To obtain the unique part of one variable, the total variance of the second variable is subtracted from the total variance predicted by X and T.    
+```{r}
+#total variance predicted by X and T
+overall_model<-summary(lm(Y~X+T, data=data))$r.squared
+
+#Finding the unique part of X
+##total variance of Y predicted by T
+lm.yt<-summary(lm(Y~T,data=data))$r.squared
+
+##Extract the unique part of X
+uniq_X<-overall_model - lm.yt
+uniq_X
+
+##Finding the unique part of T
+lm.yx<-summary(lm(Y~X,data=data))$r.squared
+
+##Extract the unique part of T
+uniq_T<-overall_model - lm.yx
+uniq_T
+```
+#With a bit of algebra, we can get the variance common to both X and T:
+```{r}
+X_Tshared<-overall_model - uniq_X - uniq_T
+X_Tshared
+```
+#Since we have the explained portion of the variance of Y, we can also obtain the unexplained variance
+```{r}
+#explained portion
+explained<-1-overall_model
+explained
 ```
 
