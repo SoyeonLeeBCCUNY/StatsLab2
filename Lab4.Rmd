@@ -42,5 +42,36 @@ ttest_result$p.value==my_anova_summary[[1]]$`Pr(>F)`
 #load the data
 library(data.table)
 all_data<-fread("data/Jamesetal2015Experiment2.csv")
+
+#Conduct the ANOVA
+##rename the levels with code from statisticsLab/lab-8
+all_data$Condition<-as.factor(all_data$Condition)
+levels(all_data$Condition)<-c("Control",
+                              "Reactivation+Tetris",
+                              "Tetris_only",
+                              "Reactivation_only")
+##rename the long variable "Days_One_to_Seven_Number_of_Intrusions" 
+names(all_data)[names(all_data)=="Days_One_to_Seven_Number_of_Intrusions"]<-"Seven_Day_Intrusions"
+
+##use anova function for the analysis 
+anova.out<-aov(Seven_Day_Intrusions~Condition,data=all_data)
+summary(anova.out)
+
+#ggplot of the means
+library(dplyr)
+means_by_condition<-all_data%>%
+  group_by(Condition)%>%
+  summarize(means=mean(Seven_Day_Intrusions))
+
+library(ggplot2)
+ggplot(means_by_condition,aes(x=Condition, y=means,fill=Condition))+
+  geom_bar(stat="identity")+
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+
+#use papaja to report the result
+library(papaja)
+apa_print(anova.out)
+
 ```
 
