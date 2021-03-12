@@ -15,33 +15,36 @@ example_data <- tibble(Group = rep(c("A","B"), each = 5),
                        DV = c(2,4,3,5,4,7,6,5,6,7))
 
 Use R to conduct a t.test and ANOVA on this data. Then use R to prove that the results of both analyses are the same. For example, prove that the p-values are the same, and prove that the F-value and T-value are related. (3 points)
+#Independence:90
 
 ```{r}
 library(tibble)
 
 example_data <- tibble(Group = rep(c("A","B"), each = 5),
                        DV = c(2,4,3,5,4,7,6,5,6,7))
-#t-test result
-ttest_result<-t.test(DV~Group, var.equal=TRUE, data=example_data)
-ttest_result
+#t-test 
+my_t<-t.test(DV~Group, var.equal=TRUE, data=example_data)
+my_t
 
-#ANOVA result
-ANOVA_result<-aov(DV~Group,data=example_data)
-my_anova_summary<-summary(ANOVA_result)
+#ANOVA 
+my_anova_summary<-summary(aov(DV~Group,data=example_data))
 
 #Results of both analyses show that p-values are the same
-ttest_p_value<-ttest_result$p.value
-anova_p_value<-my_anova_summary[[1]]$`Pr(>F)`
+##anova_p_value is a vector with two values 
+ttest_p_value<-my_t$p.value
+anova_p_value<-my_anova_summary[[1]]$`Pr(>F)`[1]
 
-ttest_p_value==anova_p_value
+round(ttest_p_value,5) == round(anova_p_value,5)
 
-t_squared<-(ttest_result$statistic)^2
-F_value<-my_anova_summary[[1]]$`F value` 
+#Show that F and t statistics are related
+t_squared<-my_t$statistic^2
+F_value<-my_anova_summary[[1]]$`F value` [1]
 
-t_squared==F_value
+round(t_squared,1)==round(F_value,1)
 ```
 
 2. Look at the lab on ANOVA that I wrote for our undergraduate statistics OER lab manual https://crumplab.github.io/statisticsLab/lab-8-one-way-anova.html. That lab shows an example of obtaining data from a published paper in psych science where a one-factor ANOVA was used as a part of the analysis. Load the data, conduct the ANOVA, report a ggplot of the means, and use papaja to help you write a short results section reporting the ANOVA result. (3 points).
+Independence: 80
 
 ```{r}
 #load the data
@@ -55,29 +58,29 @@ levels(all_data$Condition)<-c("Control",
                               "Reactivation+Tetris",
                               "Tetris_only",
                               "Reactivation_only")
-##rename the long variable "Days_One_to_Seven_Number_of_Intrusions" 
+##Shorten the DV name "Days_One_to_Seven_Number_of_Intrusions" 
 names(all_data)[names(all_data)=="Days_One_to_Seven_Number_of_Intrusions"]<-"Seven_Day_Intrusions"
+
+#ggplot of the means
+##means calculated using the fun="mean"
+library(ggplot2)
+ggplot(all_data,aes(x=Condition,y=Seven_Day_Intrusions))+
+  geom_bar(stat="summary",
+           fun="mean",
+           position="dodge",
+           aes(fill=Condition))+
+  geom_point()+
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 
 ##use anova function for the analysis 
 anova.out<-aov(Seven_Day_Intrusions~Condition,data=all_data)
 summary(anova.out)
-
-#ggplot of the means
-library(dplyr)
-means_by_condition<-all_data%>%
-  group_by(Condition)%>%
-  summarize(means=mean(Seven_Day_Intrusions))
-
-library(ggplot2)
-ggplot(means_by_condition,aes(x=Condition, y=means,fill=Condition))+
-  geom_bar(stat="identity")+
-  theme(axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
-
+  
 #use papaja to report the result
 library(papaja)
 apa_print(anova.out)
 ```
 
 #APA style report
-The one-way ANOVA revealed that playing tetris with reactivation of traumatic memory influeneces the memory intensity, `r apa_print(anova.out)$full_result$Condition`.
+The one-factor between-subjects ANOVA revealed that intervention type (No-task control, Reactivation Plus tetris, Tetris only, Reactivation only) influences the number of intrusive memories, `r apa_print(anova.out)$full_result$Condition`.
