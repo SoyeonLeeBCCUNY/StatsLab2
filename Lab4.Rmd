@@ -30,10 +30,15 @@ ANOVA_result<-aov(DV~Group,data=example_data)
 my_anova_summary<-summary(ANOVA_result)
 
 #Results of both analyses show that p-values are the same
-(ttest_result$p.value)
-(my_anova_summary[[1]]$`Pr(>F)`)
+ttest_p_value<-ttest_result$p.value
+anova_p_value<-my_anova_summary[[1]]$`Pr(>F)`
 
-ttest_result$p.value==my_anova_summary[[1]]$`Pr(>F)`
+ttest_p_value==anova_p_value
+
+t_squared<-(ttest_result$statistic)^2
+F_value<-my_anova_summary[[1]]$`F value` 
+
+t_squared==F_value
 ```
 
 2. Look at the lab on ANOVA that I wrote for our undergraduate statistics OER lab manual https://crumplab.github.io/statisticsLab/lab-8-one-way-anova.html. That lab shows an example of obtaining data from a published paper in psych science where a one-factor ANOVA was used as a part of the analysis. Load the data, conduct the ANOVA, report a ggplot of the means, and use papaja to help you write a short results section reporting the ANOVA result. (3 points).
@@ -72,6 +77,7 @@ ggplot(means_by_condition,aes(x=Condition, y=means,fill=Condition))+
 #use papaja to report the result
 library(papaja)
 apa_print(anova.out)
-
 ```
 
+#APA style report
+The one-way ANOVA revealed that playing tetris with reactivation of traumatic memory influeneces the memory intensity, `r apa_print(anova.out)$full_result$Condition`.
