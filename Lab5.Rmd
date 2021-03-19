@@ -127,8 +127,4 @@ ggplot(F_comparison, aes(x=F_value, color=type))+
 
 
 
-```{r}
-distribution<-rweibull(100,1,10)
-hist(distribution)
-```
 
