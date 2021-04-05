@@ -34,16 +34,88 @@ length(C[C>0])/10000
 The next two questions draw a connection to a technique we have not yet discussed called p-curve analysis (Simonsohn et al., 2014; Wallis, 1942). P-curve analysis is sometimes used for purposes of meta-analyses to determine whether there is “good” evidence for an effect in the literature.
 
 2. Consider that a researcher publishes a study showing a significant effect, p <. 05; but, in reality the researcher makes a type I error, and the manipulation did not cause any difference. If many other researchers replicated the study, what kind of p-values would they find? Use R to create a sampling distribution of p-values that would be expected in this situation. What shape does this distribution have? (2 points)
-Independence:
+Independence:50
 ```{r}
-
+my_pvalues1<- replicate(1000,
+                     t.test(rnorm(20,0,1),
+                            rnorm(20,0,1), 
+                            var.equal=TRUE)$p.value)
+hist(my_pvalues1)
+#We would get a flat distribution.
 ```
 
 
 3. Now assume that the published result reflects a true effect. Specifically, let’s imagine the study had two groups (between-subjects), with 20 subjects in each group. Assume that scores for subjects are all sampled from a normal distribution, and that group A has larger mean than group B by .5 standard deviations (e.g., Cohen’s d = .5). If many other researchers replicated the study, what kind of p-values would they find? Use R to create a sampling distribution of p-values that would be expected in this situation. What shape does this distribution have? (2 points)
+Independence: 90
+```{r}
+my_pvalues2<- replicate(1000,
+                     t.test(rnorm(20,0.5,1),
+                            rnorm(20,0,1), 
+                            var.equal=TRUE)$p.value)
+hist(my_pvalues2)
+#We would get a p-curve distribution.
+```
 
 Bonus Questions
 
 4. Same as #3, except that we now assume the design has four groups (between-subjects). Assume that group A has a mean that is .5 standard deviations larger than groups B, C, and D. Use R to create a sampling distribution of p-values that would be expected for the linear contrast evaluating the research hypothesis that A > B = C = D. (1 point)
+Independence:100
+```{r}
+library(tibble)
+
+my_pvalues3<-c()
+
+for(i in 1:1000){
+  sim_data<-tibble(subjects=1:80,
+                   IV=rep(c("A","B","C","D"),each=20),
+                   DV=c(rnorm(20,.5,1),replicate(3,rnorm(20,0,1))))
+
+  sim_data$IV<-factor(sim_data$IV,
+                      levels=c("A","B","C","D"))
+
+  c1<-c(3,-1,-1,-1)
+  contrasts(sim_data$IV)<-c1
+
+  sim_output<-summary.aov(aov(DV~IV,sim_data),
+                          split=list(IV=list("c1"=1)))
+
+  my_pvalues3[i]<-sim_output[[1]]$`Pr(>F)`[2]
+}
+
+hist(my_pvalues3)
+```
+
 
 5. Consider a one-factor between subjects ANOVA with four groups. Run two simulations of the null-hypothesis, one for the omnibus test, and one for the specific linear contrast mentioned above A > B = C = D. Is the probability of rejecting a type I error (for rejecting the null with alpha < .05) the same for the omnibus test versus a specific contrast? (1 point)
+Independence: 100
+```{r}
+omnibus_pvalues<-c()
+contrast_pvalues<-c()
+
+for(i in 1:1000){
+  sim_data<-tibble(subjects=1:80,
+                   IV=rep(c("A","B","C","D"),each=20),
+                   DV=c(rnorm(20,.5,1),replicate(3,rnorm(20,0,1))))
+
+  sim_data$IV<-factor(sim_data$IV,
+                      levels=c("A","B","C","D"))
+
+  c1<-c(3,-1,-1,-1)
+  contrasts(sim_data$IV)<-c1
+
+  sim_output<-summary.aov(aov(DV~IV,sim_data),
+                          split=list(IV=list("c1"=1)))
+
+  omnibus_pvalues[i]<-sim_output[[1]]$`Pr(>F)`[1]
+  contrast_pvalues[i]<-sim_output[[1]]$`Pr(>F)`[2]
+}
+
+omni_error<-length(omnibus_pvalues[omnibus_pvalues<.05])/
+            length(omnibus_pvalues)
+con_error<-length(contrast_pvalues[contrast_pvalues<.05])/
+            length(contrast_pvalues)
+
+omni_error==con_error
+#The probability of type I error for omnibus test versus a specific contrast are not the same.
+```
+
