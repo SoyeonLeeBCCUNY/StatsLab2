@@ -12,13 +12,54 @@ knitr::opts_chunk$set(echo = TRUE)
 Confidence: 
 
 Definitions:
-Main effect is a change in the value of the dependent variable due to a single indepedent variable.  If there is a difference between means for different levels of the factor, main effect is observed.  Whether this is significant or occurred by chance should be tested. 
+Main effect is observed when the value of the dependent variable vary across levels of a single independent variable. Whether such change in measures are caused by the independent variable or occurred by chance should be tested.
+Interaction occurs when the effect of one variable changes across levels of another variable.  In other words, interaction of two independent variables changes the expected main effect of factors. 
 ```{r}
+#load libraries
+library(dplyr)
+library(ggplot2)
+library(patchwork)
 
+# simulated data (pretend running an experiment)
+n <- 10
+factorial_data <- tibble(A = factor(rep(c("A1","A2"), each = n)),
+                         B = factor(rep(c("B1","B2"), n)),
+                         DV = rnorm(n*2,0,1))
+
+# look at plots of the main effects and interaction
+
+A <- factorial_data %>%
+  group_by(A) %>%
+  summarise(mean_DV = mean(DV)) %>%
+  ggplot(aes(y=mean_DV, x=A))+
+   geom_bar(stat="identity", position="dodge") +
+   ggtitle("Main effect A")
+
+B <- factorial_data %>%
+  group_by(B) %>%
+  summarise(mean_DV = mean(DV)) %>%
+  ggplot(aes(y=mean_DV, x=B))+
+   geom_bar(stat="identity", position="dodge")+
+   ggtitle("Main effect B")
+
+AB <- factorial_data %>%
+  group_by(A,B) %>%
+  summarise(mean_DV = mean(DV)) %>%
+  ggplot(aes(y=mean_DV, x=A, fill=B))+
+   geom_bar(stat="identity", position="dodge")+
+   ggtitle("AxB Interaction")
+
+# patchwork formula
+A+B+AB
 ```
 
-
 2. Complete the 2x2 factorial lab found here https://crumplab.github.io/statisticsLab/lab-10-factorial-anova.html, up to section 10.4.8. More specifically, your task is to follow that lab exercise to load in the data, transform the data into long-format, conduct a 2x2 between subjects ANOVA, and write a short results section reporting the main effects and interaction. (3 points)
+Confidence:
+```{r}
+library(data.table)
+all_data<-fread("") 
+```
+
 
 3. In chapter 10 of Crump et al. (2018), there is a discussion of patterns of main effects and interactions that can occur in a 2x2 design, which represents perhaps the simplest factorial design. There are 8 possible outcomes discussed https://crumplab.github.io/statistics/more-on-factorial-designs.html#looking-at-main-effects-and-interactions. Examples of these 8 outcomes are shown in two figures, one with bar graphs, and one with line graphs. Reproduce either of these figures using ggplot2. (3 points)
 
