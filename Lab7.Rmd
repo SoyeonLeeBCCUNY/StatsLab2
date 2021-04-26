@@ -56,9 +56,11 @@ A+B+AB
 2. Complete the 2x2 factorial lab found here https://crumplab.github.io/statisticsLab/lab-10-factorial-anova.html, up to section 10.4.8. More specifically, your task is to follow that lab exercise to load in the data, transform the data into long-format, conduct a 2x2 between subjects ANOVA, and write a short results section reporting the main effects and interaction. (3 points)
 Confidence:
 ```{r}
+#load in the data
 library(data.table)
 all_data<-fread("data/stroop_stand.csv") 
 
+#transform data into long-format
 library(summarytools)
 view(dfSummary(all_data))
 
@@ -74,10 +76,27 @@ Subject<-rep(1:50,times=4)
 
 stroop_df<-data.frame(Subject, Congruency, Posture, RTs)
 
-hist(stroop_df)
+hist(stroop_df$RTs)
+
+#conduct a 2X2 between subjects ANOVA
+library(xtable)
+
+aov_out<-aov(RTs~Congruency*Posture, stroop_df)
+summary_out<-summary(aov_out)
+
+library(xtable)
+knitr::kable(xtable(summary_out))
+
+#write a short results section reporting the main effects and interaction
+print(model.tables(aov_out,"means"),format="markdown")
+
 ```
+#Report the main effects and interaction
+There was a main effect of Congruency, F(1,196)=43.73, MSE=13189.19, p<0.001.  Mean reaction times were slower for incongruent (922.3ms) than congruent (814.9) groups.
 
+The main effect of Posture was not significant, F(1,196)=2.45, MSE=13189.19, p=0.119.  Mean reaction times were slower for sitting (881.4ms) than standing (855ms) groups.
 
-3. In chapter 10 of Crump et al. (2018), there is a discussion of patterns of main effects and interactions that can occur in a 2x2 design, which represents perhaps the simplest factorial design. There are 8 possible outcomes discussed https://crumplab.github.io/statistics/more-on-factorial-designs.html#looking-at-main-effects-and-interactions. Examples of these 8 outcomes are shown in two figures, one with bar graphs, and one with line graphs. Reproduce either of these figures using ggplot2. (3 points)
+The two-way interaction between Congruency and Posture was not significant, F(1,196)=0.497, MSE=13189.19, p<0.481.
+
 
 4. In the conceptual section of this lab we used an R simulation to find the family-wise type I error rate for a simple factorial design with 2 independent variables. Use an R simulation to find the family-wise type I error rate for a factorial design with 3 independent variables. (3 points)
