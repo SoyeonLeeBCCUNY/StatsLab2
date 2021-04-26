@@ -57,7 +57,24 @@ A+B+AB
 Confidence:
 ```{r}
 library(data.table)
-all_data<-fread("") 
+all_data<-fread("data/stroop_stand.csv") 
+
+library(summarytools)
+view(dfSummary(all_data))
+
+RTs<-c(as.numeric(unlist(all_data[,1])),
+       as.numeric(unlist(all_data[,2])),
+       as.numeric(unlist(all_data[,3])),
+       as.numeric(unlist(all_data[,4]))
+       )
+
+Congruency<-rep(rep(c("Congruent","Incongruent"),each=50),times=2)
+Posture<-rep(c("Stand","Sit"),each=100)
+Subject<-rep(1:50,times=4)
+
+stroop_df<-data.frame(Subject, Congruency, Posture, RTs)
+
+hist(stroop_df)
 ```
 
 
