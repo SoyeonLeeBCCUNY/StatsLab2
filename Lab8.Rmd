@@ -136,25 +136,41 @@ length(AB_pvalue[AB_pvalue<0.05])/1000
 Bonus point question:
 
 B1. Create a power curve showing how power for the interaction effect in this example is influenced by number of subjects. Choose a range of N from 25 to 800 (per cell) and run a simulation-based power analysis for increments of 25 subjects. Then plot the results using ggplot2 (2 points).
-Independence:90
+Independence:5
 ```{r}
+subject_increments<-seq(25,800,25)
+power_estimate<-c()
 
-
-
-N <- 500 
-AB_pvalue <- c()
-
-for(i in 1:1000){
-  sim_df<-tibble(
-    IVA = rep(rep(c("1","2"), each=2),N),
-    IVB = rep(rep(c("1","2"), 2),N),
-    DV = rnorm(4*N, c(0,0,.5,.25),1)
-  )
-  aov_results <- summary(aov(DV~IVA*IVB, sim_df))
+for(si in 1:length(subject_increments)){
+  N<-subject_increments[si]
+  AB_pvalue<-c()
   
-  AB_pvalue[i]<-aov_results[[1]]$`Pr(>F)`[3]
+  for(i in 1:1000){
+    
+    sim_df <- tibble(
+      IVA = rep(rep(c("1","2"), each=2),N),
+      IVB = rep(rep(c("1","2"), 2),N),
+      DV = rnorm(4*N, c(0,0,.5,.25),1)
+    )
+    
+    aov_results <- summary(aov(DV~IVA*IVB, sim_df))
+    AB_pvalue[i]<-aov_results[[1]]$`Pr(>F)`[3]
+  }
+
+  power_estimate[si]<-length(AB_pvalue[AB_pvalue<0.05])/1000  
 }
 
-length(AB_pvalue[AB_pvalue<0.05])/1000    
+power_curve<-tibble(subject_increments,
+                    power_estimate)
+
+ggplot(power_curve, aes(x=subject_increments,
+                        y=power_estimate))+
+  geom_point()+
+  geom_line()+
+  scale_x_continuous(breaks=seq(25,800,50))+
+  scale_y_continuous(breaks=seq(0,1,.1))+
+  theme_classic(base_size=12)+
+  geom_hline(yintercept=.8)
+  
 ```
 
