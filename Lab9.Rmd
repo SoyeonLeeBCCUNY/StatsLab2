@@ -69,7 +69,7 @@ length(p_value[p_value<.05])/1000
 ```
 
 3. Demonstrate that the Godden and Baddeley example data from the textbook (19.5), which used a 2x2 repeated measures design, can be be analyzed with one-sample t-tests to return the same results. Specifically, show the one-sample t-tests for each main effect and the interaction. (2 points)
-Independence:
+Independence: 10
 ```{r}
 godden_baddeley <- tribble(~Subjects,~LearningPlace,~TestingPlace,~Recall,
         "s1","On Land","On Land",34,
@@ -100,44 +100,28 @@ godden_baddeley <- godden_baddeley %>%
          LearningPlace = as.factor(LearningPlace),
          TestingPlace = as.factor(TestingPlace))
 
-# run ANOVA
-aov_out <- aov(Recall ~ LearningPlace*TestingPlace + Error(Subjects/(LearningPlace*TestingPlace)), godden_baddeley)
-
-# print out ANOVA summary table
-summary(aov_out)
-
-library(ggplot2)
-
-ggplot(godden_baddeley, aes(x=TestingPlace,
-                            y=Recall,
-                            shape=LearningPlace,
-                            group=LearningPlace))+
-  geom_point(stat="summary",fun="mean")+
-  geom_line(stat="summary",fun="mean")+
-  theme_classic(base_size=12)
-
 
 ####one-sample t test solutions
 
-##T test for Learning Place
-#sort out the main effect of Learning Place 
+##Main effect of Learning Place
+#sort out the Learning Place means
 learning_place_means<-godden_baddeley%>%
     group_by(Subjects,LearningPlace)%>%
     summarize(mean_recall=mean(Recall))
 
-#paired-sample t test of the mean recall as a function of Learning Place
+#paired-sample t test 
 t.test(mean_recall~LearningPlace,
        paired=TRUE,
        data=learning_place_means)
 
 
-##T test for Testing Place
+##Main effect of Testing Place 
 #sort out the main effect of Testing Place
 testing_place_means<-godden_baddeley%>%
   group_by(Subjects,TestingPlace)%>%
   summarize(mean_recall=mean(Recall))
 
-#sort out the two types of Testing Place
+#sort out the Testing Place means
 Testing_land<-testing_place_means%>%
   filter(TestingPlace=="On Land")%>%
   select(mean_recall)
@@ -146,15 +130,39 @@ Testing_sea<-testing_place_means%>%
   filter(TestingPlace=="Under Sea")%>%
   select(mean_recall)
 
-#independent t test of Testing Place types
-t.test(Testing_land$mean_recall,
+#one sample t test 
+t.test(Testing_land$mean_recall -
        Testing_sea$mean_recall,
-       var.equal=TRUE)
+       mu=0)
 
 
-A_means<-rnorm(5,0,1)
-B_means<-rnorm(5,0,1)
-t.test(A_means,B_means,var.equal = TRUE)
+##Interaction solution
+#the effect of testing On Land for learning On Land
+LL <- godden_baddeley%>%
+        filter(LearningPlace=="On Land",
+               TestingPlace=="On Land")%>%
+        pull(Recall)
+
+LS<-godden_baddeley%>%
+        filter(LearningPlace=="On Land",
+               TestingPlace=="Under Sea")%>%
+        pull(Recall)
+
+
+#the effect of testing On Land for learning Under Sea
+SL<-godden_baddeley%>%
+        filter(LearningPlace=="Under Sea",
+               TestingPlace=="On Land")%>%
+        pull(Recall)
+
+SS <- godden_baddeley%>%
+        filter(LearningPlace=="Under Sea",
+               TestingPlace=="Under Sea")%>%
+        pull(Recall)
+
+
+#single sample t test 
+t.test((LL - LS)-(SL - SS), mu=0)
 ```
 
 Bonus Points
@@ -171,6 +179,33 @@ sphericity <- tribble(~S, ~a1, ~a2, ~a3, ~a4,
 ```
 
 4. Create a line plot showing how each of the 5 subjects perform across the levels of the IV. Discuss how the line plot visually shows the sphericity problem in the data (1 point)
+Independence: 80
+```{r}
+library(tidyr)
+library(dplyr)
+
+sphericity<-pivot_longer(sphericity,
+                         cols=!S,
+                         names_to="IV",
+                         values_to="DV")
+
+sphericity<-sphericity%>%
+  mutate(S=as.factor(S),
+         IV=as.factor(IV))
+
+aov_out<-aov(DV ~ IV + Error(S), data=sphericity)
+summary(aov_out)
+
+ggplot(sphericity, aes(x=IV, 
+                       y=DV, 
+                       color=S,
+                       group=S))+
+  geom_point()+
+  geom_line()
+
+#Sphericity happens when there are uneven covariance between levels. In other words, each subject should should show similar effect across the levels.  Here, we do not see that there is a sphericity as the lines representing the results of each subject are very different--lines cross at different points. 
+```
+
 
 5. Modify the above data to remove the sphericity problem. Specifically, ensure that all subjects are different from another (there overall means are different), and that the IV has the same effect for each level and each subject (no interaction). Then, plot the new data and discuss how the graph shows the sphericity problem has been removed. (1 point)
 
