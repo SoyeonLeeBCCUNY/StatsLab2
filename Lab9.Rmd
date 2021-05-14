@@ -64,14 +64,97 @@ for (i in 1:1000){
 
   p_value[i]<-aov_out[2]$`Error: Within`[[1]]$`Pr(>F)`[1] 
 }
-
+#get proportion of p value less than .05
 length(p_value[p_value<.05])/1000
 ```
 
 3. Demonstrate that the Godden and Baddeley example data from the textbook (19.5), which used a 2x2 repeated measures design, can be be analyzed with one-sample t-tests to return the same results. Specifically, show the one-sample t-tests for each main effect and the interaction. (2 points)
 Independence:
 ```{r}
+godden_baddeley <- tribble(~Subjects,~LearningPlace,~TestingPlace,~Recall,
+        "s1","On Land","On Land",34,
+        "s2","On Land","On Land",37,
+        "s3","On Land","On Land",27,
+        "s4","On Land","On Land",43,
+        "s5","On Land","On Land",44,
+        "s1","On Land","Under Sea",18,
+        "s2","On Land","Under Sea",21,
+        "s3","On Land","Under Sea",25,
+        "s4","On Land","Under Sea",37,
+        "s5","On Land","Under Sea",34,
+        "s1","Under Sea","On Land",14,
+        "s2","Under Sea","On Land",21,
+        "s3","Under Sea","On Land",31,
+        "s4","Under Sea","On Land",27,
+        "s5","Under Sea","On Land",32,
+        "s1","Under Sea","Under Sea",22,
+        "s2","Under Sea","Under Sea",25,
+        "s3","Under Sea","Under Sea",33,
+        "s4","Under Sea","Under Sea",33,
+        "s5","Under Sea","Under Sea",42
+        )
 
+# convert IVs to factors
+godden_baddeley <- godden_baddeley %>%
+  mutate(Subjects = as.factor(Subjects),
+         LearningPlace = as.factor(LearningPlace),
+         TestingPlace = as.factor(TestingPlace))
+
+# run ANOVA
+aov_out <- aov(Recall ~ LearningPlace*TestingPlace + Error(Subjects/(LearningPlace*TestingPlace)), godden_baddeley)
+
+# print out ANOVA summary table
+summary(aov_out)
+
+library(ggplot2)
+
+ggplot(godden_baddeley, aes(x=TestingPlace,
+                            y=Recall,
+                            shape=LearningPlace,
+                            group=LearningPlace))+
+  geom_point(stat="summary",fun="mean")+
+  geom_line(stat="summary",fun="mean")+
+  theme_classic(base_size=12)
+
+
+####one-sample t test solutions
+
+##T test for Learning Place
+#sort out the main effect of Learning Place 
+learning_place_means<-godden_baddeley%>%
+    group_by(Subjects,LearningPlace)%>%
+    summarize(mean_recall=mean(Recall))
+
+#paired-sample t test of the mean recall as a function of Learning Place
+t.test(mean_recall~LearningPlace,
+       paired=TRUE,
+       data=learning_place_means)
+
+
+##T test for Testing Place
+#sort out the main effect of Testing Place
+testing_place_means<-godden_baddeley%>%
+  group_by(Subjects,TestingPlace)%>%
+  summarize(mean_recall=mean(Recall))
+
+#sort out the two types of Testing Place
+Testing_land<-testing_place_means%>%
+  filter(TestingPlace=="On Land")%>%
+  select(mean_recall)
+
+Testing_sea<-testing_place_means%>%
+  filter(TestingPlace=="Under Sea")%>%
+  select(mean_recall)
+
+#independent t test of Testing Place types
+t.test(Testing_land$mean_recall,
+       Testing_sea$mean_recall,
+       var.equal=TRUE)
+
+
+A_means<-rnorm(5,0,1)
+B_means<-rnorm(5,0,1)
+t.test(A_means,B_means,var.equal = TRUE)
 ```
 
 Bonus Points
