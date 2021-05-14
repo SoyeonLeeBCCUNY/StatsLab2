@@ -26,12 +26,14 @@ library(ggplot2)
 sim_data<-tibble(
   subjects=rep(1:6,each=5),
   IV=rep(c("Down2","Down1","Control","Up1","Up2"),times=6),
-  DV=rnorm(5*6,c(-2,-1,0,1,2),.01)
+  DV=rnorm(5*6,c(-2,-1,0,1,2),1)
   )%>%
     mutate(DV = DV+rep(rnorm(6,0,1),each=5))
 
 sim_data$IV<-factor(sim_data$IV,
                     levels=c("Down2","Down1","Control","Up1","Up2"))
+
+sim_data$subjects<-as.factor(sim_data$subjects)
 
 ggplot(sim_data, aes(x=IV, y=DV, group=subjects, color=subjects))+
   geom_point()+
@@ -40,22 +42,31 @@ ggplot(sim_data, aes(x=IV, y=DV, group=subjects, color=subjects))+
 ```
 
 2. Run a simulation to determine the proportion of experiments that would return a significant result for the above design. Assume that the effect of the levels of the IV are increments of .1 of a standard deviation, rather than increments of 1 as in the above design. (2 points?)
-Independence: 
+Independence: 70
 ```{r}
-sim_data<-tibble(
-  subjects=rep(1:6,each=5),
-  IV=rep(c("Down2","Down1","Control","Up1","Up2"),times=6),
-  DV=rnorm(5*6,c(-2,-1,0,1,2),.01)
+p_value<-c()
+
+for (i in 1:1000){
+  
+  sim_data<-tibble(
+    subjects=rep(1:6,each=5),
+    IV=rep(c("Down2","Down1","Control","Up1","Up2"),times=6),
+    DV=rnorm(5*6,c(-.2,-.1,0,.1,.2),1)
   )%>%
     mutate(DV = DV+rep(rnorm(6,0,1),each=5))
 
-sim_data$IV<-factor(sim_data$IV,
-                    levels=c("Down2","Down1","Control","Up1","Up2"))
+  sim_data$IV<-factor(sim_data$IV,
+                      levels=c("Down2","Down1","Control","Up1","Up2"))
 
+  sim_data$subjects<-as.factor(sim_data$subjects)
+  
+  aov_out<-summary(aov(DV~IV + Error(subjects),sim_data))
 
-               
+  p_value[i]<-aov_out[2]$`Error: Within`[[1]]$`Pr(>F)`[1] 
+}
+
+length(p_value[p_value<.05])/1000
 ```
-
 
 3. Demonstrate that the Godden and Baddeley example data from the textbook (19.5), which used a 2x2 repeated measures design, can be be analyzed with one-sample t-tests to return the same results. Specifically, show the one-sample t-tests for each main effect and the interaction. (2 points)
 Independence:
