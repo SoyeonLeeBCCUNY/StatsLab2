@@ -202,19 +202,21 @@ ggplot(sphericity, aes(x=IV,
   geom_point()+
   geom_line()
 
-#Sphericity happens when there are uneven covariance between levels. In other words, each subject should should show similar effect across the levels.  Here, we do not see that there is a sphericity as the lines representing the results of each subject are very different--lines cross at different points or not parallel. 
+##Explanation
+#If there is sphericity, a pattern across subjects on one level should be parallel to show that there is same effect at each level.  Here, we do not see that there is sphericity as the lines representing the results of each subject are very different--lines between levels converge or cross. 
 ```
 
 
 5. Modify the above data to remove the sphericity problem. Specifically, ensure that all subjects are different from another (there overall means are different), and that the IV has the same effect for each level and each subject (no interaction). Then, plot the new data and discuss how the graph shows the sphericity problem has been removed. (1 point)
-Independence:
+Independence:10
 ```{r}
+#correct values to have same effect at each level for all subjects
 sphericity <- tribble(~S, ~a1, ~a2, ~a3, ~a4,
         "s1",76,64,34,26,
-        "s2",60,48,46,30,
-        "s3",58,34,32,28,
-        "s4",46,46,32,28,
-        "s5",30,18,36,28
+        "s2",60,48,18,10,
+        "s3",58,46,16,8,
+        "s4",46,34,4,-4,
+        "s5",30,18,-12,-20
         )
 
 sphericity<-pivot_longer(sphericity,
@@ -231,5 +233,27 @@ ggplot(sphericity, aes(x=IV,
 
 ```
 
-
 6. Calculate the Greenhouse-Geisser estimate of epsilon for your modified data to demonstrate you have removed the sphericity problem. (1 point)
+Independence:80
+```{r}
+#sphericity corrected here
+sphericity <- tribble(~S, ~a1, ~a2, ~a3, ~a4,
+        "s1",76,64,34,26,
+        "s2",60,48,18,10,
+        "s3",58,46,16,8,
+        "s4",46,34,4,-4,
+        "s5",30,18,-12,-20
+        )
+textbook<-sphericity
+
+#double-centering
+cov_matrix <- cov(textbook[,2:5])
+col_mean_matrix <- cov_matrix*0 + colMeans(cov_matrix)
+row_mean_matrix <- t(cov_matrix*0 + rowMeans(cov_matrix))
+dc_matrix <- cov_matrix - col_mean_matrix -row_mean_matrix + mean(cov_matrix)
+
+## greenhouse-geisser
+sum(diag(dc_matrix))^2 / ((dim(dc_matrix)[1]-1)*sum(dc_matrix^2))
+
+```
+
