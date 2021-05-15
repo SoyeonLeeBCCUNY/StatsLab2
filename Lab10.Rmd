@@ -64,18 +64,29 @@ face_data<-tibble(subject,
 
 #run the anova
 
-aov_out<-aov(centiseconds~(subject +
+aov_results<-summary(aov(centiseconds~(subject +
                              Faces_A%in%Typicality_B +
                              Typicality_B +
                              Typicality_B:subject), 
-             data=face_data)
+             data=face_data))
 
-summary(aov_out)
+aov_results
+#F value for Typicality_B needs a quasi-F approach
 ```
 
 Bonus points:
 3. Use R to produce the missing quasi_F value for problem 2.
+Independence: 100
 ```{r}
+#get test mean square for the main effect of B
 
+MS_F_in_T <- aov_results[[1]]$`Mean Sq`[3]
+MS_S_by_T <- aov_results[[1]]$`Mean Sq`[4]
+MS_S_by_F <- aov_results[[1]]$`Mean Sq`[5]
+
+MS_B_Test <- MS_F_in_T + MS_S_by_T - MS_S_by_F
+
+#calculate F prime B
+(Fprime_B <- aov_results[[1]]$`Mean Sq`[2] / MS_B_Test)
 ```
 
