@@ -64,7 +64,8 @@ for (i in 1:1000){
 
   p_value[i]<-aov_out[2]$`Error: Within`[[1]]$`Pr(>F)`[1] 
 }
-#get proportion of p value less than .05
+
+#get proportion of p values less than .05
 length(p_value[p_value<.05])/1000
 ```
 
@@ -184,6 +185,7 @@ Independence: 80
 library(tidyr)
 library(dplyr)
 
+#convert it into a long data and plot
 sphericity<-pivot_longer(sphericity,
                          cols=!S,
                          names_to="IV",
@@ -193,8 +195,32 @@ sphericity<-sphericity%>%
   mutate(S=as.factor(S),
          IV=as.factor(IV))
 
-aov_out<-aov(DV ~ IV + Error(S), data=sphericity)
-summary(aov_out)
+ggplot(sphericity, aes(x=IV, 
+                       y=DV, 
+                       color=S,
+                       group=S))+
+  geom_point()+
+  geom_line()
+
+#Sphericity happens when there are uneven covariance between levels. In other words, each subject should should show similar effect across the levels.  Here, we do not see that there is a sphericity as the lines representing the results of each subject are very different--lines cross at different points or not parallel. 
+```
+
+
+5. Modify the above data to remove the sphericity problem. Specifically, ensure that all subjects are different from another (there overall means are different), and that the IV has the same effect for each level and each subject (no interaction). Then, plot the new data and discuss how the graph shows the sphericity problem has been removed. (1 point)
+Independence:
+```{r}
+sphericity <- tribble(~S, ~a1, ~a2, ~a3, ~a4,
+        "s1",76,64,34,26,
+        "s2",60,48,46,30,
+        "s3",58,34,32,28,
+        "s4",46,46,32,28,
+        "s5",30,18,36,28
+        )
+
+sphericity<-pivot_longer(sphericity,
+                         cols=!S,
+                         names_to="IV",
+                         values_to="DV")
 
 ggplot(sphericity, aes(x=IV, 
                        y=DV, 
@@ -203,10 +229,7 @@ ggplot(sphericity, aes(x=IV,
   geom_point()+
   geom_line()
 
-#Sphericity happens when there are uneven covariance between levels. In other words, each subject should should show similar effect across the levels.  Here, we do not see that there is a sphericity as the lines representing the results of each subject are very different--lines cross at different points. 
 ```
 
-
-5. Modify the above data to remove the sphericity problem. Specifically, ensure that all subjects are different from another (there overall means are different), and that the IV has the same effect for each level and each subject (no interaction). Then, plot the new data and discuss how the graph shows the sphericity problem has been removed. (1 point)
 
 6. Calculate the Greenhouse-Geisser estimate of epsilon for your modified data to demonstrate you have removed the sphericity problem. (1 point)
