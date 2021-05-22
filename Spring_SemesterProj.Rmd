@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Overview
-
+Power is the probability that a study will reject the null hypothesis when it is in fact, false.  In the context of social and behavioral science, power has great value in finding the treatment or intervention effect, although it requires increased emphasis (@myorsStatisticalPowerAnalysis2014).  
 ## Concept 
 #Why power analysis?
 
