@@ -1,0 +1,31 @@
+---
+title: "Spring_SemesterProj"
+author: "Soyeon Lee"
+date: "5/20/2021"
+bibliography: 
+csl: apa.csl
+output: html_document
+#end of YAMO
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Concept 
+#Identify power analysis
+###
+When we conduct hypothesis testing, we either result in accepting or rejecting the null hypothesis to make conclusion about a treament in an experiment.  If an experiment results in rejecting the null hypothesis, however, it is due to one of two reasons: chance, or real effects.
+
+Since 
+#Uses, strength, weakness
+#Demonstrate the main point about power analysis
+
+## Practical
+#How to conduct power analysis by using a function
+
+## Generalization Problem
+#description of the problem with guidance 
+#solution with comments
+
+## References
