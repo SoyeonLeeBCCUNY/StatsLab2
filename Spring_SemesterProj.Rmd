@@ -2,9 +2,7 @@
 title: "Spring_SemesterProj"
 author: "Soyeon Lee"
 date: "5/20/2021"
-output:
-  word_document: default
-  html_document: default
+output: html_document
 csl: apa.csl
 bibliography: references.bib
 ---
@@ -13,19 +11,19 @@ bibliography: references.bib
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ## Overview
-Power analysis performed during the planning stage of a research study is a valuable tool; it prevents wasting time and resources invested in the study. Power is the probability that a study will reject the null hypothesis when it is, in fact, false. In the context of the social and behavioral sciences, power is especially useful in finding a treatment or intervention effect.  High power means the study design can detect an effect with a higher probability; whereas low power means the study design is more likely to miss an important but small effect.
+Power analysis performed during the planning stage of a research study is a valuable tool; it prevents wasting time and resources invested in the study [@myorsStatisticalPowerAnalysis2014]. Power is the probability that a study will reject the null hypothesis when it is, in fact, false. In the context of the social and behavioral sciences, power is especially useful in finding a treatment or intervention effect [@myorsStatisticalPowerAnalysis2014].  High power means the study design can detect an effect with a higher probability; whereas low power means the study design is more likely to miss an important but small effect [@crumpChapter12Thinking2019].
 
 In this write-up, we will identify the function of power in a research study, its determinants, and demonstrate its application.
  
 ## Concept
-Importance of power in hypothesis testing:  There are two purposes of statistics in social and behavioral sciences: describe the observed phenomenon; and explain how the results of samples reveal a phenomenon in a broader context.  When a research study involves the latter, we use samples to conduct experiments to learn about the population. Samples are meant to represent the population of interest, but they may not represent the population well.  In other words, results of the samples differing from the estimated values of the population may be due to random fluctuation of the samples, rather than indicating the real effects of a treatment or intervention.
+Importance of power in hypothesis testing:  There are two purposes of statistics in social and behavioral sciences: describe the observed phenomenon; and explain how the results of samples reveal a phenomenon in a broader context [@myorsStatisticalPowerAnalysis2014].  When a research study involves the latter, we use samples to conduct experiments to learn about the population. Samples are meant to represent the population of interest, but they may not represent the population well.  In other words, results of the samples differing from the estimated values of the population may be due to random fluctuation of the samples, rather than indicating the real effects of a treatment or intervention.
 
-When we conduct hypothesis tests to compare the null against an alternative hypothesis, power can be useful.  There are two types of errors that can occur when we decide to accept or reject the null hypothesis: Type I error and type II error.  We commit Type I error when we erroneously reject the null hypothesis that the population data without treatment or intervention do not differ from the population with treatment or intervention. Type II error occurs when we fail to reject the null hypothesis incorrectly (i.e., the alternative hypothesis is true).  Committing Type II errors ignores the truth:  the deviation of the values results from intervention or treatment is due to the treatment effect, rather than random fluctuation of the samples, or sampling error. Power analysis is concerned with Type II error; it is the probability that we will correctly detect the effect if there is one. 
+When we conduct hypothesis tests to compare the null against an alternative hypothesis, power can be useful.  There are two types of errors that can occur when we decide to accept or reject the null hypothesis: Type I error and type II error [@myorsStatisticalPowerAnalysis2014].  We commit Type I error when we erroneously reject the null hypothesis that the population data without treatment or intervention do not differ from the population with treatment or intervention. Type II error occurs when we fail to reject the null hypothesis incorrectly (i.e., the alternative hypothesis is true).  Committing Type II errors ignores the truth:  the deviation of the values results from intervention or treatment is due to the treatment effect, rather than random fluctuation of the samples, or sampling error. Power analysis is concerned with Type II error; it is the probability that we will correctly detect the effect if there is one [@myorsStatisticalPowerAnalysis2014]. 
 
-Although useful to know for designing a research study, we do not always know the level of power in advance.  The probability of correctly rejecting the null hypothesis varies with sample size, effect size, and criterion for rejection. We also do not know the three determinants in advance. However, a few considerations should be made.
+Although useful to know for designing a research study, we do not always know the level of power in advance [@myorsStatisticalPowerAnalysis2014].  The probability of correctly rejecting the null hypothesis varies with sample size, effect size, and criterion for rejection. We also do not know the three determinants in advance. However, a few considerations should be made.
 
 ### Sample size
-Power varies with size of samples. Given that estimated standard deviation is the same, larger sample sizes decrease sampling error.  Reduced sampling size is optimal, as it increases precision of statistical tests to distinguish treatment effects from differences occurring due to sampling error.  Small sample sizes leading to unstable results are more prone to Type II error (i.e., missing the treatment effect). With other things constant, power varies with sample size.
+Power varies with size of samples [@crumpChapter12Thinking2019; @myorsStatisticalPowerAnalysis2014]. Given that estimated standard deviation is the same, larger sample sizes decrease sampling error.  Reduced sampling size is optimal, as it increases precision of statistical tests to distinguish treatment effects from differences occurring due to sampling error.  Small sample sizes leading to unstable results are more prone to Type II error (i.e., missing the treatment effect). With other things constant, power varies with sample size.
 ```{r}
 library(pwr)
 num_subjects <- seq(10,1000,length.out=20)
