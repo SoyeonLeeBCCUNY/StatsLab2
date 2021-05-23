@@ -3,24 +3,89 @@ title: "Spring_SemesterProj"
 author: "Soyeon Lee"
 date: "5/20/2021"
 bibliography: references.bib
-#csl: apa.csl
+csl: apa.csl
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
 ## Overview
-Power is the probability that a study will reject the null hypothesis when it is in fact, false.  In the context of social and behavioral science, power has great value in finding the treatment or intervention effect, although it requires increased emphasis (@myorsStatisticalPowerAnalysis2014).  
-## Concept 
-#Why power analysis?
+Power analysis performed during the planning stage of the research study is a valuable tool; it prevents wasting time and resources invested in the study.  Power is the probability that a study will reject the null hypothesis when it is in fact, false.  In the context of the social and behavioral science, power is especially useful in finding the treatment or intervention effect.  High power means the study design can detect the effect with a higher probability; whereas lower power means the study design will miss the important but small effect. 
 
-When we conduct hypothesis testing, we either result in accepting or rejecting the null hypothesis to make conclusion about a treament in an experiment.  If an experiment results in rejecting the null hypothesis, however, it is due to one of two reasons: chance, or real effects.
+In this write-up, we will identify the function of power in a research study, its determinants, and demonstrate the application of power. 
+
+## Concept
+Importance power in hypothesis testing
+There are two purposes of statistics in social and behavioral sciences: describe the observed phenomenon and explain how the results of samples reveal a phenomenon in a broader context.  When a research study involves the latter, we use samples to conduct experiments to learn about the population.  Samples are meant represent the population of interest, but they may not represent the population well.  In other words, results of the samples differing from the estimated values of population may be due the random fluctuation of the samples, rather than indicating the real effects of the treatment or intervention. 
+
+When we conduct hypothesis test to compare the null against the alternative hypothesis, power can be useful.  There are two types of errors that can occur when we decide to accept or reject the null hypothesis:  Type I error and type II error.  We commit type I error when we erroneously reject the null hypothesis that the population data without treatment or intervention do not differ from the population with treatment or intervention.  Type II error is when we fail to reject the null hypothesis when the alternative hypothesis is true.  That is, we decide that any deviation of the values after intervention or treatment is due to the treatment effect, rather than random fluctuation of the samples, or sampling error.  Power analysis concerned with the Type II error; it is the probability that we will correctly detect the effect if there is one.  
+
+Although useful to know for designing a research study, we do not know the level of power in advance.  The probability of correctly rejecting the null hypothesis vary with sample size, effect size, and criterion for rejection.  We also do not know the three determinants in advance; however, few considerations should be made.
+
+### Sample size
+Power varies with size of samples.  Given that estimated standard deviation is the same, larger sample size decreases sampling error. Reduced sampling size is optimal, as it increases precision of statistical tests to distinguish treatment effects from differences occurring due to sampling error. Small sample sizes leading to unstable results that are more prone to Type II error (i.e., missing the treatment effect).  With other things constant, power varies with sample size.
+```{r}
+library(pwr)
+num_subjects <- seq(10,1000,length.out=20)
+power <- sapply(num_subjects,
+          FUN = function(x) {
+            pwr.t.test(n=x,
+            d=.2,
+            sig.level=.01,
+            type="two.sample",
+            alternative="two.sided")$power})
+plot_df <- data.frame(num_subjects,power)
+
+library(ggplot2)
+ggplot(plot_df, aes(x=num_subjects,
+                    y=power))+
+  geom_point()+
+  geom_line()+
+  ggtitle("Power as a function of sample sizes")
+```
+### Effect size
+One of the most common effect size measured is Cohen's d, which is a standardized mean difference indicating how much impact treatment has on the dependent variable. Effect sizes are classified as small, medium, and large--approximately .2, .5, and .8, respectively.  All other things equal, large effect size makes it easy to detect treatment effect; whereas a very small effect size may not reliably detect the treatment effect. In other words, power increases as effect size increases.
+```{r}
+library(pwr)
+effect_sizes <- seq(0,2,.1)
+power <- sapply(effect_sizes,
+          FUN = function(x) {
+            pwr.t.test(n=10,
+            d=x,
+            sig.level=.05,
+            type="two.sample",
+            alternative="two.sided")$power})
+plot_df <- data.frame(effect_sizes,power)
+
+library(ggplot2)
+ggplot(plot_df, aes(x=effect_sizes,
+                    y=power))+
+  geom_point()+
+  geom_line()+
+  ggtitle("Power as a function of effect sizes")
+```
+### Decision criterion
+When setting the alpha criterion, the goal is to minimize Type I errors.  In other words, a researcher often determines the criterion value with the interest of not rejecting the null when they are actually true.  Alpha criterion of .05 rather than .01 more often used.  This lenient standard (i.e., larger alpha criterion) is easier to reject the null hypothesis.  With other things equal, larger alpha criterion increases the probability of rejecting the null hypothesis, when the alternative to the null is true.  This implies power. 
+
+```{r}
+ggplot(data.frame(x = c(0, 180)), aes(x)) +
+  stat_function(fun = dnorm,
+                color = "red",
+                args = list(mean = 100,sd = 20)) +
+  stat_function(fun = dnorm,
+                color = "green",
+                alpha = .8,
+                args = list(mean = 70,sd = 20))
+
+```
+
 
 
 ## Practical
 #How to conduct power analysis by using a function
+However, such emphasis on detecting the treatment effect can risk a failure to detect the effect, leading to a Type II error.  This trade-off between Type I and Type II errors are observed in the following plot. 
+
 
 ## Generalization Problem
 #description of the problem with guidance 
