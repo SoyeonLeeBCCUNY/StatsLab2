@@ -66,10 +66,7 @@ ggplot(plot_df, aes(x=effect_sizes,
   ggtitle("Power as a function of effect sizes")
 ```
 ### Decision criterion
-When setting the alpha criterion, the goal is to minimize Type I errors.  In other words, a researcher often determines the criterion value with the interest of not rejecting the null when they are actually true.  Alpha criterion of .05 rather than .01 more often used.  This lenient standard (i.e., larger alpha criterion) is easier to reject the null hypothesis.  With other things equal, larger alpha criterion increases the probability of rejecting the null hypothesis, when the alternative to the null is true.  This implies power. 
-
-
-
+When setting the alpha criterion, the goal is to minimize Type I errors.  In other words, a researcher often determines the criterion value with the interest of not rejecting the null when they are actually true.  Alpha criterion of .05 rather than .01 more often used.  This lenient standard (i.e., larger alpha criterion) is easier to reject the null hypothesis.  With other things equal, larger alpha criterion increases the probability of rejecting the null hypothesis, when the alternative hypothesis is true.  As demonstrated in the plot below, power (orange region) is greater when the alpha criterion value is larger. 
 ```{r}
 library(ggplot2)
 library(patchwork)
@@ -145,12 +142,66 @@ B<-ggplot(data.frame(x = c(-3, 5)), aes(x)) +
 
 A+B
 ```
-
-
-
 ## Practical
-#How to conduct power analysis by using a function
-However, such emphasis on detecting the treatment effect can risk a failure to detect the effect, leading to a Type II error.  This trade-off between Type I and Type II errors are observed in the following plot. 
+
+Power analysis is useful both planning and diagnosis of research study design.  During planning, it is frequently used to determine the sample size for the alpha criterion significance.  As a diagnostic tool, researchers can identify if there is a enough design for power in the design, or learn about the reliable effect size to achieve a certain level of power.  Such versatility is due to that power is a function of sample size, effect size, and alpha criterion.     
+#However, such emphasis on detecting the treatment effect can risk a failure to detect the effect, leading to a Type II error.  This trade-off between Type I and Type II errors should be considered. 
+In this section, we will walk through the example cases in which we will discover the appropriate sample and effect sizes to achieve power in an experiment.  Note that the power of .80 is a conventionally used, which we adopt in our examples.  This value can vary for specific purposes, but the use of the convention seems reasonable, according to documented evidence.  The value of alpha criterion is more arbitrary but in our example, we will explore cases with .05 alpha criterion. 
+
+### Case 1: Determining the sample size for an experiment
+As discussed in the concept section, large number of samples increases power, which can cause concerns about the Type I error (i.e., reject the null when there is no effect).  On the other hand, too little power can cause researchers to make Type II error of failing to reject the null and miss the true effect.  This trade-off between two types of errors warrants a power analysis to determine the sample size.  We would like to find out the range of sample sizes that would help us reach the .80 level of power.  Learning about the minimum sample size would be helpful, especially in cases of tight resources and time. 
+
+Let's say we are designing an experiment on the efficacy of a study skills training.  The experimental group will receive an 8-week training and the controls will receive none.  The test scores will then be compared between groups. Based on the previous literature, we estimate that the effect size of the training is d=.40. We want to achieve the power of .80, with the alpha criterion of .05.  What would be the range and the minimum number of sample size required for the researchers to find out whether the training makes a difference in the students' test performance?
+```{r}
+library(pwr)
+num_subjects <- seq(1,400,10)
+power <- sapply(num_subjects,
+          FUN = function(x) {
+            pwr.t.test(n=x,
+            d=.4,
+            sig.level=.05,
+            type="two.sample",
+            alternative="two.sided")$power})
+plot_df <- data.frame(num_subjects,power)
+
+library(ggplot2)
+ggplot(plot_df, aes(x=num_subjects,
+                    y=power))+
+  geom_point()+
+  geom_line()+
+  theme_classic ()+
+  geom_hline(yintercept=.8, color="blue")+
+  ggtitle("Power curve for d=.4, \n
+          Independent samples t=test")
+```
+According to the power analysis, the range of subject numbers appropriate for the goal of the experiment is around 100 participants and above per group.  In consideration of resources and time limitation, designing the study with the minimum number of participants would be ideal.  
+
+What if we have to find out the required effect size, instead of the number of participants?  If we were to have limited number of participants already set for the experiment, what would be the range and the minimum effect size to result in statistically significance?
+
+Let's say we have 50 participants available per group.  We want to define significance at .05 alpha criterion and achieve .80 level of power.  What kind of effect size should we have in order to detect the intervention effect if there is one?  
+```{r}
+effect_sizes <- seq(.1,2,.1)
+power <- sapply(effect_sizes,
+          FUN = function(x) {
+            pwr.t.test(n=50,
+            d=x,
+            sig.level=.05,
+            type="two.sample",
+            alternative="two.sided")$power})
+plot_df <- data.frame(effect_sizes,power)
+
+library(ggplot2)
+ggplot(plot_df, aes(x=effect_sizes,
+                    y=power))+
+  geom_point()+
+  geom_line()+
+  theme_classic ()+
+  geom_hline(yintercept=.8, color="red")+
+  ggtitle("Power curve for N=50, \n
+          Independent samples t=test")
+```
+Looking at the result, we can see that the effect sizes of more than d=.5 (medium effect) would be need to achieve the experimental goal. 
+
 
 
 ## Generalization Problem
