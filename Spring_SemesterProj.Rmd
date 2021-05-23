@@ -68,22 +68,7 @@ ggplot(plot_df, aes(x=effect_sizes,
 ### Decision criterion
 When setting the alpha criterion, the goal is to minimize Type I errors.  In other words, a researcher often determines the criterion value with the interest of not rejecting the null when they are actually true.  Alpha criterion of .05 rather than .01 more often used.  This lenient standard (i.e., larger alpha criterion) is easier to reject the null hypothesis.  With other things equal, larger alpha criterion increases the probability of rejecting the null hypothesis, when the alternative to the null is true.  This implies power. 
 
-```{r}
-ggplot(data.frame(x = c(0, 180)), aes(x)) +
-  stat_function(fun = dnorm,
-                color = "red",
-                args = list(mean = 100,sd = 20)) +
-  stat_function(fun = dnorm,
-                color = "green",
-                alpha = .8,
-                args = list(mean = 70,sd = 20))+
-  labs(
-    title = "Power",
-    x = "Means",
-    y = "Density"
-  )
 
-```
 
 ```{r}
 library(ggplot2)
