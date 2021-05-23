@@ -2,29 +2,30 @@
 title: "Spring_SemesterProj"
 author: "Soyeon Lee"
 date: "5/20/2021"
-bibliography: references.bib
+output:
+  word_document: default
+  html_document: default
 csl: apa.csl
-output: html_document
+bibliography: references.bib
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ## Overview
-Power analysis performed during the planning stage of the research study is a valuable tool; it prevents wasting time and resources invested in the study.  Power is the probability that a study will reject the null hypothesis when it is in fact, false.  In the context of the social and behavioral science, power is especially useful in finding the treatment or intervention effect.  High power means the study design can detect the effect with a higher probability; whereas lower power means the study design will miss the important but small effect. 
+Power analysis performed during the planning stage of a research study is a valuable tool; it prevents wasting time and resources invested in the study. Power is the probability that a study will reject the null hypothesis when it is, in fact, false. In the context of the social and behavioral sciences, power is especially useful in finding a treatment or intervention effect.  High power means the study design can detect an effect with a higher probability; whereas low power means the study design is more likely to miss an important but small effect.
 
-In this write-up, we will identify the function of power in a research study, its determinants, and demonstrate the application of power. 
-
+In this write-up, we will identify the function of power in a research study, its determinants, and demonstrate its application.
+ 
 ## Concept
-Importance power in hypothesis testing
-There are two purposes of statistics in social and behavioral sciences: describe the observed phenomenon and explain how the results of samples reveal a phenomenon in a broader context.  When a research study involves the latter, we use samples to conduct experiments to learn about the population.  Samples are meant represent the population of interest, but they may not represent the population well.  In other words, results of the samples differing from the estimated values of population may be due the random fluctuation of the samples, rather than indicating the real effects of the treatment or intervention. 
+Importance of power in hypothesis testing:  There are two purposes of statistics in social and behavioral sciences: describe the observed phenomenon; and explain how the results of samples reveal a phenomenon in a broader context.  When a research study involves the latter, we use samples to conduct experiments to learn about the population. Samples are meant to represent the population of interest, but they may not represent the population well.  In other words, results of the samples differing from the estimated values of the population may be due to random fluctuation of the samples, rather than indicating the real effects of a treatment or intervention.
 
-When we conduct hypothesis test to compare the null against the alternative hypothesis, power can be useful.  There are two types of errors that can occur when we decide to accept or reject the null hypothesis:  Type I error and type II error.  We commit type I error when we erroneously reject the null hypothesis that the population data without treatment or intervention do not differ from the population with treatment or intervention.  Type II error is when we fail to reject the null hypothesis when the alternative hypothesis is true.  That is, we decide that any deviation of the values after intervention or treatment is due to the treatment effect, rather than random fluctuation of the samples, or sampling error.  Power analysis concerned with the Type II error; it is the probability that we will correctly detect the effect if there is one.  
+When we conduct hypothesis tests to compare the null against an alternative hypothesis, power can be useful.  There are two types of errors that can occur when we decide to accept or reject the null hypothesis: Type I error and type II error.  We commit Type I error when we erroneously reject the null hypothesis that the population data without treatment or intervention do not differ from the population with treatment or intervention. Type II error occurs when we fail to reject the null hypothesis incorrectly (i.e., the alternative hypothesis is true).  Committing Type II errors ignores the truth:  the deviation of the values results from intervention or treatment is due to the treatment effect, rather than random fluctuation of the samples, or sampling error. Power analysis is concerned with Type II error; it is the probability that we will correctly detect the effect if there is one. 
 
-Although useful to know for designing a research study, we do not know the level of power in advance.  The probability of correctly rejecting the null hypothesis vary with sample size, effect size, and criterion for rejection.  We also do not know the three determinants in advance; however, few considerations should be made.
+Although useful to know for designing a research study, we do not always know the level of power in advance.  The probability of correctly rejecting the null hypothesis varies with sample size, effect size, and criterion for rejection. We also do not know the three determinants in advance. However, a few considerations should be made.
 
 ### Sample size
-Power varies with size of samples.  Given that estimated standard deviation is the same, larger sample size decreases sampling error. Reduced sampling size is optimal, as it increases precision of statistical tests to distinguish treatment effects from differences occurring due to sampling error. Small sample sizes leading to unstable results that are more prone to Type II error (i.e., missing the treatment effect).  With other things constant, power varies with sample size.
+Power varies with size of samples. Given that estimated standard deviation is the same, larger sample sizes decrease sampling error.  Reduced sampling size is optimal, as it increases precision of statistical tests to distinguish treatment effects from differences occurring due to sampling error.  Small sample sizes leading to unstable results are more prone to Type II error (i.e., missing the treatment effect). With other things constant, power varies with sample size.
 ```{r}
 library(pwr)
 num_subjects <- seq(10,1000,length.out=20)
@@ -45,7 +46,7 @@ ggplot(plot_df, aes(x=num_subjects,
   ggtitle("Power as a function of sample sizes")
 ```
 ### Effect size
-One of the most common effect size measured is Cohen's d, which is a standardized mean difference indicating how much impact treatment has on the dependent variable. Effect sizes are classified as small, medium, and large--approximately .2, .5, and .8, respectively.  All other things equal, large effect size makes it easy to detect treatment effect; whereas a very small effect size may not reliably detect the treatment effect. In other words, power increases as effect size increases.
+One of the most common effect size measurements is Cohen’s d, which is a standardized mean difference indicating how much impact a treatment has on the dependent variable. Effect sizes are classified as small, medium, and large–approximately .2, .5, and .8, respectively.  All other things equal, a large effect size makes it easy to detect a treatment effect; whereas a very small effect size may not reliably detect a treatment effect.  In other words, power increases with increasing effect size.
 ```{r}
 library(pwr)
 effect_sizes <- seq(0,2,.1)
@@ -66,7 +67,7 @@ ggplot(plot_df, aes(x=effect_sizes,
   ggtitle("Power as a function of effect sizes")
 ```
 ### Decision criterion
-When setting the alpha criterion, the goal is to minimize Type I errors.  In other words, a researcher often determines the criterion value with the interest of not rejecting the null when they are actually true.  Alpha criterion of .05 rather than .01 more often used.  This lenient standard (i.e., larger alpha criterion) is easier to reject the null hypothesis.  With other things equal, larger alpha criterion increases the probability of rejecting the null hypothesis, when the alternative hypothesis is true.  As demonstrated in the plot below, power (orange region) is greater when the alpha criterion value is larger. 
+When setting the alpha criterion, the goal is to minimize Type I errors. In other words, a researcher often determines the criterion value with the interest of not rejecting the null when it is actually true. An alpha criterion of .05, rather than .01, is more often used. This lenient standard (i.e., larger alpha criterion) makes it easier to reject the null hypothesis. With other things equal, a larger alpha criterion increases the probability of rejecting the null hypothesis, when the alternative hypothesis is true. As demonstrated in the plot below, power (orange region) is greater when the alpha criterion value is larger. 
 ```{r}
 library(ggplot2)
 library(patchwork)
@@ -142,16 +143,16 @@ B<-ggplot(data.frame(x = c(-3, 5)), aes(x)) +
 
 A+B
 ```
+
 ## Practical
+Power analysis is useful in both planning and diagnosis of research study design. During planning, power is frequently used to determine the sample size for the alpha criterion of significance.  As a diagnostic tool, researchers can identify if there is a enough design for power in the design, or learn about the reliable effect size needed to achieve a certain level of power.  Such versatility is due to the fact that power is a function of sample size, effect size, and alpha criterion.
 
-Power analysis is useful both planning and diagnosis of research study design.  During planning, it is frequently used to determine the sample size for the alpha criterion significance.  As a diagnostic tool, researchers can identify if there is a enough design for power in the design, or learn about the reliable effect size to achieve a certain level of power.  Such versatility is due to that power is a function of sample size, effect size, and alpha criterion.     
-
-In this section, we will walk through the example cases in which we will discover the appropriate sample and effect sizes to achieve power in an experiment.  Note that the power of .80 is a conventionally used, which we adopt in our examples.  This value can vary for specific purposes, but the use of the convention seems reasonable, according to documented evidence.  The value of alpha criterion is more arbitrary but in our example, we will explore cases with .05 alpha criterion. 
+In this section, we will walk through the example cases in which we will discover the appropriate sample and effect sizes to achieve power in an experiment.  Note that the power of .80 is conventionally used, which we adopt in our examples.  This value can vary for specific purposes, but the use of the convention seems reasonable according to documented evidence.  Our example explores cases with .05 alpha criterion.
 
 ### Case 1: Determining the sample size for an experiment
-As discussed in the concept section, large number of samples increases power, which can cause concerns about the Type I error (i.e., reject the null when there is no effect).  On the other hand, too little power can cause researchers to make Type II error of failing to reject the null and miss the true effect.  This trade-off between two types of errors warrants a power analysis to determine the sample size.  We would like to find out the range of sample sizes that would help us reach the .80 level of power.  Learning about the minimum sample size would be helpful to design an experiment without wasting additional time and resource. 
+As discussed in the concept section, a large number of samples increases power, which can cause concerns about Type I error (i.e., reject the null when there is no effect).  On the other hand, too little power can cause researchers to make a Type II error of failing to reject the null and miss the true effect.  This trade-off between two types of errors warrants a power analysis to determine the optimal sample size.  We would like to find out the range of sample sizes that would help us reach the .80 level of power.  Learning about the minimum sample size would be helpful to design an experiment without wasting additional time and resources.
 
-Let's say we are designing an experiment on the efficacy of a study skills training.  The experimental group will receive an 8-week training and the controls will receive none.  The test scores will then be compared between groups. Based on the previous literature, we estimate that the effect size of the training is d=.40. We want to achieve the power of .80, with the alpha criterion of .05.  What would be the range and the minimum number of sample size required to detect that the training makes a difference in the students' test performance?
+Let’s say we are designing an experiment on the efficacy of study skills training.  The experimental group will receive an 8-week training program and the controls will receive none.  Test scores will then be compared between groups.  Based on the previous literature, we estimate that the effect size of the training is d=.40.  We want to achieve the power of .80, with the alpha criterion of .05.  What would be the range and the minimum sample size required to detect that the training makes a difference in students’ test performance?
 ```{r}
 library(pwr)
 num_subjects <- seq(1,400,10)
@@ -174,12 +175,12 @@ ggplot(plot_df, aes(x=num_subjects,
   ggtitle("Power curve for d=.4, \n
           Independent samples t-test")
 ```
-According to the power analysis, the range of subject numbers appropriate for the goal of the experiment is around 100 participants and above per group.  In consideration of resources and time limitation, designing the study with the minimum number of participants would be ideal.  
+According to the power analysis, the range of subject numbers appropriate for the goal of the experiment is around 100 participants and above per group.  In consideration of resources and time constraints, designing the study with the minimum number of participants would be ideal.  
 
 ### Case 2: Determining the effect size for an experiment
-What if we have to find out the required effect size, instead of the number of participants?  If we were to have limited number of participants already set for the experiment, what would be the range and the minimum effect size to result in statistically significance?
+What if we have to find out the required effect size, instead of the number of participants? If we were to have a limited number of participants already set for the experiment, what would be the range and the minimum effect size to result in statistical significance?
 
-Let's say we have 50 participants available per group.  We want to define significance at .05 alpha criterion and achieve .80 level of power.  What kind of effect size should we have in order to detect the intervention effect if there is one?  
+Let’s assume we have 50 participants available per group. We want to define significance at the .05 alpha criterion and achieve a .80 level of power.  What kind of effect size should we have in order to detect the intervention effect (if there is one)?
 ```{r}
 effect_sizes <- seq(.1,2,.1)
 power <- sapply(effect_sizes,
@@ -201,18 +202,16 @@ ggplot(plot_df, aes(x=effect_sizes,
   ggtitle("Power curve for N=50, \n
           Independent samples t-test")
 ```
-Looking at the result, we can see that the effect sizes of more than d=.5 (medium effect) would be need to achieve the experimental goal. 
-
-Power analysis is versatile because power is a function of the effect size, sample size, and the decision criterion for determining significance.  If you know any one of four values (including power), you can solve for the remaining three values.  As introduced in the example above, we can use the conventional values such as alpha criterion of .05 and power level of .80 in determining other values.  That said, these conventions are not obligatory for researchers but useful.  The level of power at .80 is a reasonable convention supported well by previous literature.  For example, correctly rejecting the false null hypothesis is as four times as likely for the power of .80. 
-
-Though power analysis is seemingly useful in research designs, we must consider the related complexities.  Achieving high power is not easy.  For example, the level of power is often small in social and behavioral science.  This may be related to many factors including the fields' vulnerabilities to resources and luck to achieve a large sample size. Whereas larger effect sizes increases power, its flexibility is limited.  In fact, they are always estimates, which are substantially based on theoretical and empirical research in many fields.  Further limiting the ability to adjust the determining values for power is alpha criterion--specifically, the trade-off between Type I and Type II error imposes a limit to adjusting the decision criterion more liberal. In spite of these challenges, thoughtful application of power analysis in any statistical hypothesis testing is useful to justify the researchers' rigorous effort.   
-
+Looking at the result, we can see that effect sizes of more than d=.5 (medium effect) are required to achieve the experimental goal.
+Power analysis is versatile because power is a function of effect size, sample size, and the decision criterion for determining significance.  If you know any one of four values (including power), you can solve for the remaining three values.  As introduced in the example above, we can use the conventional values such as an alpha criterion of .05 and power level of .80 in determining other values.  That said, these conventions are useful, but not obligatory, for researchers.  The level of power at .80 is a reasonable convention supported well by previous literature.  For example, correctly rejecting the false null hypothesis is four times as likely for the power of .80.
+Though power analysis is seemingly useful in research designs, we must consider its related complexities.  Achieving high power is not easy.  For example, the level of power is often small in the social and behavioral sciences. This may be related to many factors including the field’s vulnerabilities to resources and luck to achieve a large sample size. Whereas larger effect sizes increase power, its flexibility is limited. In fact, they are always estimates, which are substantially based on theoretical and empirical research in many fields.  Further limiting the ability to adjust the determining values for power is the alpha criterion.  Specifically, the trade-off between Type I and Type II error imposes a limit to adjusting the decision criterion to being more liberal than an alpha criterion of .05.  In spite of these challenges, thoughtful application of power analysis in any statistical hypothesis testing is useful to justify a researchers’ rigorous effort.
+   
 ## Generalization Problem
-1a. Let's say we want to re-design the previously mentioned study skills training.  We think that there will be too much individual differences among available participants, such that we want to see whether students' performance will be improve if they receive the 8-week training.  We plan to have each participant to take a test before the training and after the training.  Based on the previous literature, we estimate that the effect size of the training is d=.40. We want to achieve the power of .80, with the alpha criterion of .05.  What would be the minimum number of sample size required to detect the improvement the training would make on the students' test performance?  Plot to show the range of values for sample sizes for this design. 
+1a.  Let’s say we want to re-design the previously mentioned investigation into study skills training.  We think that there will be too much individual difference among available participants, such that we want to see whether students’ performance will improve if they receive an 8-week training program.  We plan to have each participant take a test before and after the training.  Based on the previous literature, we estimate that the training’s effect size is d=.40.  We want to achieve a power of .80, with an alpha criterion of .05.  What would be the minimum sample size required to detect the improvement the training would make on the students’ test performance?  Plot to show the range of values of sample sizes for this design.
 
-1b. Compared to the required sample size for case 1, what are some of the reasons why significantly less number of participants could potentially achieve the same level of power? 
+1b. Compared to the required sample size for Case 1, what are some of the reasons why significantly fewer participants could potentially achieve the same level of power?
 
-###  Suggested solution for 1a
+###  Suggested solutions
 ```{r}
 library(pwr)
 num_subjects <- seq(1,400,10)
@@ -235,8 +234,8 @@ ggplot(plot_df, aes(x=num_subjects,
   ggtitle("Power curve for d=.4, \n
           Repeated-measures t-test")
 ```
-1a solution:  Almost 40 participants at minimum are required to detect that the detect the improvement the training would make on the students' test performance.
+1a solution: Almost 40 participants at minimum are required to detect the improvement the training would make on students’ test performance.
 
-1b solution:  Significantly reduced number of participants are required to achieve same level of power in this experiment because reduced sampling error would increases the probability of detecting the intervention effect.  Additionally, one-tailed test of this current example lowers the boundaries for critical region, which in turn increases power. 
-
+1b solution: Significantly fewer participants are required to achieve the same level of power in this experiment because reduced sampling error would increase the probability of detecting the intervention effect.  Additionally, a one-tailed test of this current example lowers the boundaries for the critical region, which in turn increases power.
+ 
 ## References
