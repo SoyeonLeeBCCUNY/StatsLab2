@@ -76,8 +76,89 @@ ggplot(data.frame(x = c(0, 180)), aes(x)) +
   stat_function(fun = dnorm,
                 color = "green",
                 alpha = .8,
-                args = list(mean = 70,sd = 20))
+                args = list(mean = 70,sd = 20))+
+  labs(
+    title = "Power",
+    x = "Means",
+    y = "Density"
+  )
 
+```
+
+```{r}
+library(ggplot2)
+library(patchwork)
+#graph for alpha=.05, one-tailed
+A<-ggplot(data.frame(x = c(-3, 5)), aes(x)) +
+      
+      stat_function(
+        fun = dnorm,
+        geom = "line",
+        linetype = 2
+      ) +
+      
+      stat_function(
+        fun = dnorm,
+        geom = "area",
+        fill = "orange",
+        args = list(
+          mean = 2
+        ),
+        xlim = c(1.64, 5)
+      ) +
+      
+      stat_function(
+        fun = dnorm,
+        geom = "line",
+        linetype = 1,
+        alpha = .3,
+        args = list(
+          mean = 2
+        )
+      ) +
+      
+      labs(
+        title = "Power as a function of .05 criterion",
+        x = "Standard deviation",
+        y = "Density"
+      )
+
+#graph for alpha=.01, one-tailed
+B<-ggplot(data.frame(x = c(-3, 5)), aes(x)) +
+      
+      stat_function(
+        fun = dnorm,
+        geom = "line",
+        linetype = 2
+      ) +
+      
+      stat_function(
+        fun = dnorm,
+        geom = "area",
+        fill = "orange",
+        args = list(
+          mean = 2
+        ),
+        xlim = c(2.33, 5)
+      ) +
+      
+      stat_function(
+        fun = dnorm,
+        geom = "line",
+        linetype = 1,
+        alpha = .3,
+        args = list(
+          mean = 2
+        )
+      ) +
+      
+      labs(
+        title = "Power as a function of .01 criterion",
+        x = "Standard deviation",
+        y = "Density"
+      )
+
+A+B
 ```
 
 
