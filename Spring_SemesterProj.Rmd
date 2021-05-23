@@ -145,13 +145,13 @@ A+B
 ## Practical
 
 Power analysis is useful both planning and diagnosis of research study design.  During planning, it is frequently used to determine the sample size for the alpha criterion significance.  As a diagnostic tool, researchers can identify if there is a enough design for power in the design, or learn about the reliable effect size to achieve a certain level of power.  Such versatility is due to that power is a function of sample size, effect size, and alpha criterion.     
-#However, such emphasis on detecting the treatment effect can risk a failure to detect the effect, leading to a Type II error.  This trade-off between Type I and Type II errors should be considered. 
+
 In this section, we will walk through the example cases in which we will discover the appropriate sample and effect sizes to achieve power in an experiment.  Note that the power of .80 is a conventionally used, which we adopt in our examples.  This value can vary for specific purposes, but the use of the convention seems reasonable, according to documented evidence.  The value of alpha criterion is more arbitrary but in our example, we will explore cases with .05 alpha criterion. 
 
 ### Case 1: Determining the sample size for an experiment
-As discussed in the concept section, large number of samples increases power, which can cause concerns about the Type I error (i.e., reject the null when there is no effect).  On the other hand, too little power can cause researchers to make Type II error of failing to reject the null and miss the true effect.  This trade-off between two types of errors warrants a power analysis to determine the sample size.  We would like to find out the range of sample sizes that would help us reach the .80 level of power.  Learning about the minimum sample size would be helpful, especially in cases of tight resources and time. 
+As discussed in the concept section, large number of samples increases power, which can cause concerns about the Type I error (i.e., reject the null when there is no effect).  On the other hand, too little power can cause researchers to make Type II error of failing to reject the null and miss the true effect.  This trade-off between two types of errors warrants a power analysis to determine the sample size.  We would like to find out the range of sample sizes that would help us reach the .80 level of power.  Learning about the minimum sample size would be helpful to design an experiment without wasting additional time and resource. 
 
-Let's say we are designing an experiment on the efficacy of a study skills training.  The experimental group will receive an 8-week training and the controls will receive none.  The test scores will then be compared between groups. Based on the previous literature, we estimate that the effect size of the training is d=.40. We want to achieve the power of .80, with the alpha criterion of .05.  What would be the range and the minimum number of sample size required for the researchers to find out whether the training makes a difference in the students' test performance?
+Let's say we are designing an experiment on the efficacy of a study skills training.  The experimental group will receive an 8-week training and the controls will receive none.  The test scores will then be compared between groups. Based on the previous literature, we estimate that the effect size of the training is d=.40. We want to achieve the power of .80, with the alpha criterion of .05.  What would be the range and the minimum number of sample size required to detect that the training makes a difference in the students' test performance?
 ```{r}
 library(pwr)
 num_subjects <- seq(1,400,10)
@@ -172,10 +172,11 @@ ggplot(plot_df, aes(x=num_subjects,
   theme_classic ()+
   geom_hline(yintercept=.8, color="blue")+
   ggtitle("Power curve for d=.4, \n
-          Independent samples t=test")
+          Independent samples t-test")
 ```
 According to the power analysis, the range of subject numbers appropriate for the goal of the experiment is around 100 participants and above per group.  In consideration of resources and time limitation, designing the study with the minimum number of participants would be ideal.  
 
+### Case 2: Determining the effect size for an experiment
 What if we have to find out the required effect size, instead of the number of participants?  If we were to have limited number of participants already set for the experiment, what would be the range and the minimum effect size to result in statistically significance?
 
 Let's say we have 50 participants available per group.  We want to define significance at .05 alpha criterion and achieve .80 level of power.  What kind of effect size should we have in order to detect the intervention effect if there is one?  
@@ -198,14 +199,44 @@ ggplot(plot_df, aes(x=effect_sizes,
   theme_classic ()+
   geom_hline(yintercept=.8, color="red")+
   ggtitle("Power curve for N=50, \n
-          Independent samples t=test")
+          Independent samples t-test")
 ```
 Looking at the result, we can see that the effect sizes of more than d=.5 (medium effect) would be need to achieve the experimental goal. 
 
+Power analysis is versatile because power is a function of the effect size, sample size, and the decision criterion for determining significance.  If you know any one of four values (including power), you can solve for the remaining three values.  As introduced in the example above, we can use the conventional values such as alpha criterion of .05 and power level of .80 in determining other values.  That said, these conventions are not obligatory for researchers but useful.  The level of power at .80 is a reasonable convention supported well by previous literature.  For example, correctly rejecting the false null hypothesis is as four times as likely for the power of .80. 
 
+Though power analysis is seemingly useful in research designs, we must consider the related complexities.  Achieving high power is not easy.  For example, the level of power is often small in social and behavioral science.  This may be related to many factors including the fields' vulnerabilities to resources and luck to achieve a large sample size. Whereas larger effect sizes increases power, its flexibility is limited.  In fact, they are always estimates, which are substantially based on theoretical and empirical research in many fields.  Further limiting the ability to adjust the determining values for power is alpha criterion--specifically, the trade-off between Type I and Type II error imposes a limit to adjusting the decision criterion more liberal. In spite of these challenges, thoughtful application of power analysis in any statistical hypothesis testing is useful to justify the researchers' rigorous effort.   
 
 ## Generalization Problem
-#description of the problem with guidance 
-#solution with comments
+1a. Let's say we want to re-design the previously mentioned study skills training.  We think that there will be too much individual differences among available participants, such that we want to see whether students' performance will be improve if they receive the 8-week training.  We plan to have each participant to take a test before the training and after the training.  Based on the previous literature, we estimate that the effect size of the training is d=.40. We want to achieve the power of .80, with the alpha criterion of .05.  What would be the minimum number of sample size required to detect the improvement the training would make on the students' test performance?  Plot to show the range of values for sample sizes for this design. 
+
+1b. Compared to the required sample size for case 1, what are some of the reasons why significantly less number of participants could potentially achieve the same level of power? 
+
+###  Suggested solution for 1a
+```{r}
+library(pwr)
+num_subjects <- seq(1,400,10)
+power <- sapply(num_subjects,
+          FUN = function(x) {
+            pwr.t.test(n=x,
+            d=.4,
+            sig.level=.05,
+            type="paired",
+            alternative="greater")$power})
+plot_df <- data.frame(num_subjects,power)
+
+library(ggplot2)
+ggplot(plot_df, aes(x=num_subjects,
+                    y=power))+
+  geom_point()+
+  geom_line()+
+  theme_classic ()+
+  geom_hline(yintercept=.8, color="blue")+
+  ggtitle("Power curve for d=.4, \n
+          Repeated-measures t-test")
+```
+1a solution:  Almost 40 participants at minimum are required to detect that the detect the improvement the training would make on the students' test performance.
+
+1b solution:  Significantly reduced number of participants are required to achieve same level of power in this experiment because reduced sampling error would increases the probability of detecting the intervention effect.  Additionally, one-tailed test of this current example lowers the boundaries for critical region, which in turn increases power. 
 
 ## References
